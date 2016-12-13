@@ -35,14 +35,14 @@ function serverStart() {
     const express = require('express');
     const logManager = require('logger');
     const app = express();
-    const es = require('kokomo.elasticsearch');
+    // const es = require('kokomo.elasticsearch');
 
-    const apm = require('./routes/apm');
+    const acceptor = require('./routes/acceptor');
 
     if (app.get('env') !== 'production') // production 에서만 동작
         throw new Error(`NODE_ENV(${app.get('env')}) production mode only.`);
 
-    es.init(config.ELASTICSEARCH); // ElasticSearch initialize
+    // es.init(config.ELASTICSEARCH); // ElasticSearch initialize
 
     app.set('trust proxy', true); // ELB 또는 LoadBalancer를 인식한다.
     app.set('port', config.NODE_PORT); // 서비스 포트
@@ -63,21 +63,18 @@ function serverStart() {
     app.use(require('./routes/prepare').setSession); // session 설정
     app.use(require('./routes/prepare').setNow); // session.now 설정
 
-    app.route('/rest').get(apm.api).post(apm.api); // API
+    app.route('/R').get(acceptor.api).post(acceptor.api); // API
 
     app.use(require('./routes/prepare').lastBounce); // Last Bounce
-    app.use(apm.error); // KokomoError Handler
+    app.use(acceptor.error); // KokomoError Handler
     app.use(require('./routes/unhandledError')); // Associating Error Handler
 
     app.listen(app.get('port'), err => {
         err ? console.error(err) : console.log('Express Server Listening on port %s', app.get('port'));
         err ? null : process.emit('express.ready');
     });
-
-    config.SSL && config.SSL.cert && startHttp2(config.SSL, app); // HTTP2 / SSL enable test
-
-    config.CHATDMIN && require('chatdmin').init(config.CHATDMIN); // Chatdmin enable
-
+    // config.SSL && config.SSL.cert && startHttp2(config.SSL, app); // HTTP2 / SSL enable test
+    // config.CHATDMIN && require('chatdmin').init(config.CHATDMIN); // Chatdmin enable
 }
 
 // HTTP2 / SSL enable test
