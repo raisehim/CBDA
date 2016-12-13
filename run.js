@@ -5,11 +5,13 @@ process.on('SIGINT', () => process.exit());
 const config = require('./env.js');
 const path = require('path');
 
+/*
 Promise.all([ // resource initialize
     require('kokomo.mdb').init({ _caller: "KOKOMO.BROKER" }),
     require('res').init()
 ]).then(serverStart).then(webStart).catch(err => console.error(err));
-
+*/
+serverStart();
 // Kokomo Website
 function webStart() {
 
@@ -31,13 +33,11 @@ function webStart() {
 function serverStart() {
 
     const express = require('express');
-    const logManager = require('kokomo.logger');
+    const logManager = require('logger');
     const app = express();
     const es = require('kokomo.elasticsearch');
 
     const apm = require('./routes/apm');
-    const ops_pdu = require('./routes/pdu');
-    const ops = require('./routes/opsadm');
 
     if (app.get('env') !== 'production') // production 에서만 동작
         throw new Error(`NODE_ENV(${app.get('env')}) production mode only.`);
@@ -48,18 +48,22 @@ function serverStart() {
     app.set('port', config.NODE_PORT); // 서비스 포트
     app.set('etag', false); // cache나 식별정보 사용 불가 처리
 
-    app.route(['/', '/health.html']).get(function(req, res) { res.send('OK').end(); }); // LB health check
+    app.route(['/', '/health.html']).get(function (req, res) { res.send('OK').end(); }); // LB health check
 
     app.use(logManager.connectLogger(logManager.getLogger('access')));
+    app.use(express.cookieParser());
+    app.use(express.session({
+        key: "sid", // 세션키
+        secret: "secret", // 비밀키
+        cookie: {
+            maxAge: 1000 * 60 * 60 // 쿠키 유효기간 1시간
+        }
+    }));
     app.use(require('./routes/compress')); // 전문 암호화 / 압축
     app.use(require('./routes/prepare').setSession); // session 설정
     app.use(require('./routes/prepare').setNow); // session.now 설정
 
-    app.route('/overlord').get(apm.api).post(apm.api); // API
-    app.route('/overlord_bin/:mode/:kId/:heroIds').get(apm.bin).post(apm.bin); // cookie
-    app.route('/ops/:ops/:rn/:fname').get(ops.ops).post(ops.ops);
-    app.route('/items/:ops/:fname').get(ops.items).post(ops.items);
-    app.route('/pdu').get(ops_pdu.pdu).post(ops_pdu.pdu);
+    app.route('/rest').get(apm.api).post(apm.api); // API
 
     app.use(require('./routes/prepare').lastBounce); // Last Bounce
     app.use(apm.error); // KokomoError Handler
