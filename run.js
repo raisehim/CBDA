@@ -2,7 +2,7 @@
 
 process.on('SIGINT', () => process.exit());
 
-const config = require('./lib/config');
+const config = require('./env.js');
 const path = require('path');
 
 Promise.all([ // resource initialize
@@ -38,7 +38,7 @@ function serverStart() {
     const apm = require('./routes/apm');
     const ops_pdu = require('./routes/pdu');
     const ops = require('./routes/opsadm');
-    
+
     if (app.get('env') !== 'production') // production 에서만 동작
         throw new Error(`NODE_ENV(${app.get('env')}) production mode only.`);
 
@@ -48,7 +48,7 @@ function serverStart() {
     app.set('port', config.NODE_PORT); // 서비스 포트
     app.set('etag', false); // cache나 식별정보 사용 불가 처리
 
-    app.route(['/', '/health.html']).get(function (req, res) { res.send('OK').end(); }); // LB health check
+    app.route(['/', '/health.html']).get(function(req, res) { res.send('OK').end(); }); // LB health check
 
     app.use(logManager.connectLogger(logManager.getLogger('access')));
     app.use(require('./routes/compress')); // 전문 암호화 / 압축
