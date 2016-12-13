@@ -1,0 +1,69 @@
+{
+    "name": "CBDA",
+    "private": true,
+    "version": "0.0.1",
+    "description": "",
+    "keywords": [
+        "node.js"
+    ],
+    "homepage": "",
+    "bugs": {
+        "url": "",
+        "email": ""
+    },
+    "author": {
+        "name": "raisehim",
+        "email": "raisehim0318@gmail.com"
+    },
+    "main": "run.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/raisehim/CBDA.git"
+    },
+    "scripts": {
+        "start": "node run.js"
+    },
+    "config": {
+        "run.port": "80"
+    },
+    "os": [],
+    "cpu": [],
+    "readmeFilename": "README.md",
+    "dependencies": {
+        "app-module-path": "^1.0.5",
+        "body-parser": "^1.5.2",
+        "commander": "^2.9.0",
+        "compressjs": "^1.0.3",
+        "connect-timeout": "^1.7.0",
+        "cookie-parser": "^1.4.0",
+        "csurf": "^1.8.3",
+        "ejs": "*",
+        "elasticsearch": "^11.0.1",
+        "encoding": "^0.1.12",
+        "errorhandler": "^1.1.1",
+        "express": "^4.8.0",
+        "express-domain-middleware": "^0.1.0",
+        "express-session": "^1.11.3",
+        "ink-docstrap": "^1.1.4",
+        "jsdoc": "^3.4.0",
+        "method-override": "^2.1.2",
+        "moment": "^2.11.1",
+        "moment-timezone": "^0.4.0",
+        "mongodb": "^2.2.9",
+        "mongoose": "^4.4.19",
+        "multer": "^1.1.0",
+        "mysql": "^2.10.2",
+        "node-uuid": "^1.4.7",
+        "nodemailer": "^2.4.0",
+        "protocol-buffers": "^3.1.6",
+        "redis": "^2.5.0",
+        "serve-favicon": "^2.0.1",
+        "socket.io": "^1.4.6",
+        "socket.io-redis": "^1.0.0",
+        "sprintf-js": "^1.0.3",
+        "svn-interface": "^0.5.0",
+        "xlsx": "^0.8.0",
+        "class.helper": "^1.1.0",
+        "promise.chain": "^1.0.3"
+    }
+}
