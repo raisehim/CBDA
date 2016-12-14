@@ -1,0 +1,21 @@
+<div id="<?=data.id?>" style="position:relative; overflow:auto; padding:5px; border-radius:5px; margin-top:10px; border:1px solid #dcdcdc;">
+    <div class="input-group">
+        <div class="input-group-btn">
+            <button type='button' class="btn btn-info">@</button>
+        </div>
+        <span class="input-group-addon" style='width:100%'><?=data.message?></span>
+        <div class="input-group-btn">
+            <button type='button' class='btn btn-info'>Fork</button>
+            <button type='button' class='btn btn-danger closePane'>Close</button>
+        </div>
+    </div>
+
+    <div class="media-body response" style="padding:10px 5px 5px 5px;">
+        <button class="btn btn-warning btn-sm"><i class="fa fa-refresh fa-spin"></i> Loading</button>
+    </div>
+</div>
+<?
+    onRender.push(function(){
+        $(`#${data.id} .closePane:first`).on('click', event => $(`#${data.id}`).remove());
+    });
+?>

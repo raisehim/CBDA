@@ -7,7 +7,7 @@
             transports: ['websocket']
         });
 
-        var $adm = window.$adm;
+        // var $adm = window.$adm;
         var $ = lib.$;
         var AJST = lib.AJST;
         var TplPrepend = lib.TplPrepend;
@@ -18,7 +18,7 @@
         AJST.option({
             debug: true,
             url: function (id, option) {
-                return './tpl/' + (id.split('-').join('/')) + '.html';
+                return './template/' + (id.split('-').join('/')) + '.html';
             },
             global: {
                 $: $,
