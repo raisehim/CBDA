@@ -1,7 +1,26 @@
 'use strict';
 
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+function setup() {
+    passport.use(new LocalStrategy({
+        usernameField: 'email',
+        passwordField: 'password'
+    },
+        function (email, password, done) {
+            // 인증 정보 체크 로직
+            if (email === 'test@test.com' && password === 'test') {
+                // 로그인 성공시 유저 아이디를 넘겨준다.
+                var user = { id: 'user_1' };
+                return done(null, user);
+            } else {
+                return done(null, false, { message: 'Fail to login.' });
+            }
+        }
+    ));
+};
 
-module.exports.api = function (req, res, next) {
+module.exports = (req, res, next) => {
     req.setEncoding('utf8');
 
     res.set({
@@ -12,88 +31,65 @@ module.exports.api = function (req, res, next) {
         'Expires': 0,
     });
 
-    if (typeof req.session.API !== 'string' || typeof req.body.type !== 'number')
-        return next(new Error('NOT_IMPLEMENTED'));
+    console.log(req.query, req.body, req.params, req.session);
+    console.log(~0, ~1, ~-1, ~-2);
+    var jwt = require('jsonwebtoken');
+    // var compose = require('composable-middleware');
+    var SECRET = 'token_secret';
+    var validateJwt = require('express-jwt')({ secret: SECRET });
+    function signToken(id) {
+        return jwt.sign({ id: id }, SECRET, { expiresInMinutes: EXPIRES });
+    }
 
-    let method;
+    if (req.query && req.query.hasOwnProperty('access_token')) {
+        req.headers.authorization = 'Bearer ' + req.query.access_token;
+    }
+    req.user = {
+        id: req.user.id,
+        name: 'name of ' + req.user.id
+    };
 
-    try { // NOT_IMPLEMENTED
-        const path = pdu.getRouterPath(req.body.type);
-        method = require(path)[req.session.API];
-    } catch (e) { return next(new Error('NOT_IMPLEMENTED')); }
+    // 토큰 인증 로직
+    validateJwt(req, res, next);
 
     try {
+        res.json(req.session);
+        return next();
+        // new Runner(req, res).then
+        /*
         return method.call(req.session, req.body)
             .then(result => pdu.getResponseData(req.session.API, result))
             .then(result => {
                 let RTN = result;
                 res._data = RTN;
-                res.send(RTN);
+                res.json(RTN);
                 next();
             }).catch(next); // router/error 에서 오류 일괄 처리
+            */
     } catch (e) {
+        res.json({ AA: 1 });
         return next(e); // router/error 에서 오류 일괄 처리
     }
-
 };
 
-module.exports.bin = function (req, res, next) {
-
-    res.set({
-        'Content-Type': 'application/octet-stream',
-        'Access-Control-Allow-Origin': '*',
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': 0,
-    });
-
-    if (!req.accepts('application/octet-stream'))
-        return next(UTIL.net.HTTP.DO_NOT_USE);
-
-    let promise;
-
-    try {
-
-        switch (req.params.mode) {
-            case "save":
-            case "write":
-                promise = require('playerDungeon/route')['PDG_SAVE'].call(req.session, req.params.kId, req.params.heroIds, req.body);
-                break;
-            case "read":
-            case "load":
-                promise = require('playerDungeon/route')['PDG_GET_BIN'].call(req.session, req.params.kId);
-                break;
-        }
-
-    } catch (e) {
-        return next(e);
+class Runner {
+    constructor(req, res) {
     }
+}
 
-    if (!promise) {
-        return next(new Error('NOT_IMPLEMENTED'));
-    }
-
-    promise.then(result => {
-        res.send(result);
+// Pontoon Localization
+/*
+      .use(function(req, res, next) {
+        var decoded = jwt.verify(req.headers.authorization, SECRET);
+        console.log(decoded) // '{id: 'user_id'}'
+        req.user = decode;
+      })
+      // Attach user to request
+      .use(function(req, res, next) {
+        req.user = {
+          id: req.user.id,
+          name: 'name of ' + req.user.id
+        };
         next();
-    }).catch(next);
-
-};
-
-/**
- * KokomoError / 정상 처리
- * err.errorInfo가 존재하는 경우 KokomoError
- * 그외에는 모두 unhandledError 상세 리포팅.
- */
-module.exports.error = (err, req, res, next) => {
-
-    if (!err || !err.errorInfo) return next(err);
-
-    let response = {
-        type: -req.body["type"],
-        is: require("pdu.enum").CRUD.CRUD_FAIL,
-        error_info: err.errorInfo
-    };
-
-    res.send(response).end();
-};
+      });
+      */

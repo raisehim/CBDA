@@ -23,7 +23,7 @@ conf.HOST_IP = (() => {
 })();
 conf.KOKOMO_ENV = process.argv[2];
 conf.NODE_ENV = 'production';
-conf.NODE_PORT = 9001;
+conf.NODE_PORT = 80;
 conf.LOGROOT = null;
 
 // Overlord Secret Key
