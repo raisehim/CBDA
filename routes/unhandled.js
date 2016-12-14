@@ -3,8 +3,9 @@
 const httpStatus = require('./_define').http;
 module.exports = (err, req, res, next) => {
     res.status(err.status || httpStatus.INTERNAL_SERVER_ERROR);
-    res.render('error', {
+    res.json({
         message: err.message,
-        error: (process.env.NODE_ENV === 'development') ? err : {}
+        error: err,//(process.env.NODE_ENV === 'development') ? err : {}
+        trace: err.stack
     });
 };

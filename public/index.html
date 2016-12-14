@@ -1,1 +1,53 @@
-"TESTE"
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>...</title>
+
+    <meta charset="utf-8">
+    <!--maximum-scale, minimum-scale, 그리고 user-scalable-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <link rel="stylesheet" type="text/css" href="css/normalize.css">
+    <!--link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"-->
+    <!--link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css"-->
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/jqueryui-bootstrap/jquery-ui-1.10.3.custom.css">
+    <link rel="stylesheet" type="text/css" href="css/c3.css">
+
+    <script src="javascripts/es6-shim.min.js"></script>
+    <script src="javascripts/jquery.min.js"></script>
+    <script src="javascripts/jquery-ui.min.js"></script>
+    <!--script src="javascripts/tether.min.js"></script-->
+    <script src="javascripts/require.js"></script>
+    <!--script src="javascripts/adm.jquery.js"></script-->
+    <script src="javascripts/bootstrap.js"></script>
+
+    <script>
+        jQuery.fn.button.noConflict(); 
+        
+        requirejs.config({
+            waitSeconds: 30,
+            baseUrl: 'javascripts'
+        });
+                
+        // initialize
+        require(['./index.js']);
+    </script>
+
+    <style>
+        BODY {
+            font-family: Alice;
+            margin: 0px;
+            padding: 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main-navbar"></div>
+    <div id="main-container"></div>
+</body>
+
+</html>

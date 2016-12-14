@@ -2,6 +2,7 @@
 
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+
 function setup() {
     passport.use(new LocalStrategy({
         usernameField: 'email',

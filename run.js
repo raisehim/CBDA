@@ -49,8 +49,8 @@ function serverStart() {
     app.set('trust proxy', true); // ELB 또는 LoadBalancer를 인식한다.
     app.set('port', config.NODE_PORT); // 서비스 포트
     app.set('etag', false); // cache나 식별정보 사용 불가 처리
-    app.set('views', path.join(__dirname, 'views'));
-    app.set('view engine', 'jade');
+    // app.set('views', path.join(__dirname, 'views'));
+    // app.set('view engine', 'jade');
 
     app.use(require('serve-static')('public', { index: ["index.html"] }));
     app.use(logManager.connectLogger(logManager.getLogger('access')));
@@ -79,12 +79,14 @@ function serverStart() {
     app.use(require('./routes/error')); // Associating Error Handler
     app.use(require('./routes/unhandled')); // Associating Error Handler
 
-    app.listen(app.get('port'), err => {
+    const server = app.listen(app.get('port'), err => {
         err ? console.error(err) : console.log('Express Server Listening on port %s', app.get('port'));
         err ? null : process.emit('express.ready');
     });
     // config.SSL && config.SSL.cert && startHttp2(config.SSL, app); // HTTP2 / SSL enable test
     // config.CHATDMIN && require('chatdmin').init(config.CHATDMIN); // Chatdmin enable
+
+    const io = require('socket.io')(server);
 }
 
 // HTTP2 / SSL enable test
