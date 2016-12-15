@@ -1,6 +1,6 @@
 'use strict';
 (function (window, define) {
-    define(['lib', '/socket.io/socket.io.js', 'render/Render.js'], function (lib, io, Render) {
+    define(['lib', '/socket.io/socket.io.js', 'render/Render.js', 'complete.ly'], function (lib, io, Render) {
 
         var socket = io({
             'sync disconnect on unload': true,
@@ -36,18 +36,15 @@
         }
 
         function setMainContainer() {
-
             var pv = completely($('#inputMessage')[0]);
             $(pv.hint).css({ 'background-color': 'transparent' });
             // $(pv.input).css({'background-color':'transparent'}).addClass('form-control');
 
-            pv.setText($adm.getSessionStorage('chatdmin-last-command') || '');
+            // pv.setText($adm.getSessionStorage('chatdmin-last-command') || '');
 
             pv.onChange = function (text) {
-
                 pv.repaint();
                 request(text, 'suggest');
-
             };
 
             $(pv.input).on('focus', function (event) { $(pv.dropDown).show(); pv.onChange(pv.getText()); });
@@ -69,7 +66,6 @@
                 $adm.setSessionStorage('chatdmin-last-command', message);
 
             });
-
             pv.input.focus();
 
             socket.on('push', onServerPush);
@@ -111,19 +107,13 @@
             function onSuggest(resMessage) {
 
                 socket.removeAllListeners(`${resMessage.id}`);
-
                 let text = pv.getText();
                 let arr = text.split(/\s+/);
-
                 pv.startFrom = (text && text[text.length - 1]) === ' ' ? text.length :
                     arr.length > 1 ? arr.slice(0, arr.length - 1).join(' ').length + 1 : 0;
-
                 pv.options = (resMessage.result || []).map(s => String(s).trim() + ' ');
-
                 //console.log(pv.startFrom, pv.options, arr);
-
                 pv.repaint();
-
             }
 
             function onServerPush(resMessage) {
